@@ -14,11 +14,14 @@ Preprocessor items, such as
 #define MEMLENGTH 4096
 #define HEADERSIZE 8
 #define ROUND(x) (((x)+7)&~7)
+
 static union {
     char bytes[MEMLENGTH];
     double not_used;
 } heap;
 static int check = 0;
+
+
 
 /*
 Helper functions, including
@@ -31,11 +34,13 @@ Note the pointer returned by mymalloc() must point to the payload, not the chunk
 void * mymalloc (size_t size, char *file, int line) {
     
     //Setup of initial variables and the heap
+    //Since everything will be 8-byte aligned, the 3 LSBs are unused. 
+    //We will therefore use the first LSB (representing 2^0) to represent free (0) or allocated (1).
     void *ret;
     size_t neededBytes = HEADERSIZE + ROUND(size);
     if (check == 0) {
         check = 1;
-        
+        heap.bytes[0] = (double)(MEMLENGTH-8);
     }
 
     
