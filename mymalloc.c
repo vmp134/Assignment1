@@ -50,15 +50,27 @@ void * mymalloc (size_t size, char *file, int line) {
     //We will therefore use the first LSB (representing 2^0) to represent free (0) or allocated (1).
     int i = 0;
     while (i < MEMLENGTH) {
-        if ((size_t)heap.bytes[i] & 1) {
+
+        //Branch to handle if given space is not a header
+        if (0) {
+            
+        }
+
+        //Branch to handle allocated memory
+        else if ((size_t)heap.bytes[i] & 1) {
             i += ((size_t)heap.bytes[i] - 1);
         }
+
+        //Branch to handle allocate, then split
         else if (0) {
 
         }
+
+        //Branch to handle unallocated memory that's too small
         else {
 
         }
+
     }
     
     return ret;
