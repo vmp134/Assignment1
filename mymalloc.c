@@ -30,7 +30,7 @@ Helper functions, including
 void initialize () {
     if (!check) {
         check = 1;
-        *(size_t *)&heap.bytes[0] = MEMLENGTH;
+        *((size_t *)&heap.bytes[0]) = MEMLENGTH;
     }
 }
 
@@ -50,9 +50,9 @@ void * mymalloc (size_t size, char *file, int line) {
     //We will therefore use the first LSB (representing 2^0) to represent free (0) or allocated (1).
     int i = 0;
     while (i < MEMLENGTH) {
-        size_t currentHeader = *(size_t *)&heap.bytes[i];
+        size_t currentHeader = *((size_t *)&heap.bytes[i]);
 
-        //Branch to handle if given space is not a header
+        //Branch to handle invalid header
         if (0) {
             
         }
