@@ -36,7 +36,7 @@ void initialize () {
 
 /*
 mymalloc(), implemented by Victor Peng, vmp134
-Note the pointer returned by mymalloc() must point to the payload, not the chunk header.
+From p1.pdf: "Note the pointer returned by mymalloc() must point to the payload, not the chunk header."
 */
 void * mymalloc (size_t size, char *file, int line) {
     
