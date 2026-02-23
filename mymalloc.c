@@ -12,20 +12,26 @@ Preprocessor items, such as
     - Check to see if heap has been created
 */
 #define MEMLENGTH 4096
-#define HEADERSIZE 8
+#define HEADERLENGTH 8
 #define ROUND(x) (((x)+7)&~7)
 
 static union {
     char bytes[MEMLENGTH];
     double not_used;
 } heap;
+
 static int check = 0;
-
-
 
 /*
 Helper functions, including
+    - initialize() - initialize the heap, currently has no action if already initialized
 */
+void initialize (check) {
+    if (!check) {
+        check = 1;
+        heap.bytes[0] = (double)(MEMLENGTH-8);
+    }
+}
 
 /*
 mymalloc(), implemented by Victor Peng, vmp134
@@ -34,17 +40,18 @@ Note the pointer returned by mymalloc() must point to the payload, not the chunk
 void * mymalloc (size_t size, char *file, int line) {
     
     //Setup of initial variables and the heap
+    void *ret;
+    size_t neededBytes = HEADERLENGTH + ROUND(size);
+    initialize(check);
+
+    //Loop to check for free/unallocated memory
     //Since everything will be 8-byte aligned, the 3 LSBs are unused. 
     //We will therefore use the first LSB (representing 2^0) to represent free (0) or allocated (1).
-    void *ret;
-    size_t neededBytes = HEADERSIZE + ROUND(size);
-    if (check == 0) {
-        check = 1;
-        heap.bytes[0] = (double)(MEMLENGTH-8);
+    char i = 0;
+    while (i < MEMLENGTH) {
+
     }
-
     
-
     return ret;
 }
 
