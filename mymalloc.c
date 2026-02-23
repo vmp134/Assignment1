@@ -30,7 +30,7 @@ Helper functions, including
 void initialize (check) {
     if (!check) {
         check = 1;
-        heap.bytes[0] = (long long)(MEMLENGTH-8);
+        heap.bytes[0] = (size_t)MEMLENGTH;
     }
 }
 
@@ -48,10 +48,10 @@ void * mymalloc (size_t size, char *file, int line) {
     //Loop to check for free/unallocated memory
     //Since everything will be 8-byte aligned, the 3 LSBs are unused. 
     //We will therefore use the first LSB (representing 2^0) to represent free (0) or allocated (1).
-    char i = 0;
+    int i = 0;
     while (i < MEMLENGTH) {
-        if ((long long)heap.bytes[i] & 1) {
-            i += ((long long)heap.bytes[i] - 1);
+        if ((size_t)heap.bytes[i] & 1) {
+            i += ((size_t)heap.bytes[i] - 1);
         }
         else if (0) {
 
