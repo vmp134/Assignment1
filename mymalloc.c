@@ -27,7 +27,7 @@ Helper functions, including
     - initialize() - initialize the heap, currently has no action if already initialized
     - detect() - runs at exit, detects leaks
 */
-void initialize (check) {
+void initialize () {
     if (!check) {
         check = 1;
         heap.bytes[0] = (size_t)MEMLENGTH;
@@ -43,7 +43,7 @@ void * mymalloc (size_t size, char *file, int line) {
     //Setup of initial variables and the heap
     void *ret;
     size_t neededBytes = HEADERLENGTH + ROUND(size);
-    initialize(check);
+    initialize();
 
     //Loop to check for free/unallocated memory
     //Since everything will be 8-byte aligned, the 3 LSBs are unused. 
