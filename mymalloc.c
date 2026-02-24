@@ -25,18 +25,28 @@ static int check = 0;
 /*
 Helper functions, including
     - initialize() - initialize the heap, currently has no action if already initialized
-    - detectLeaks() - runs at exit, detects leaks
+    - detectLeaks() - runs at exit, returns how many bytes were allocated in how many objects
 */
-void initialize () {
+void initialize (void) {
     if (!check) {
         check = 1;
         *((size_t *)&heap.bytes[0]) = MEMLENGTH;
+        atexit(detectLeaks);
     }
+}
+
+void detectLeaks (void) {
+    int bytesLeaked = 0;
+    int objCreated = 0;
+    int i = 0;
+    while (i < MEMLENGTH) {
+
+    }
+    printf("%i bytes leaked in %i objects.", bytesLeaked, objCreated);
 }
 
 /*
 mymalloc(), implemented by Victor Peng, vmp134
-From p1.pdf: "Note the pointer returned by mymalloc() must point to the payload, not the chunk header."
 */
 void * mymalloc (size_t size, char *file, int line) {
     
@@ -60,8 +70,9 @@ void * mymalloc (size_t size, char *file, int line) {
         //Branch to handle allocate, then split
         else if (neededBytes <= (currentHeader & -1)) {
             *((size_t *)&heap.bytes[i]) = (neededBytes | 1);
-
             ret = &heap.bytes[(i + HEADERLENGTH)];
+
+            if (neededBytes == (currentHeader & -1)) return ret;
 
             i += neededBytes;
             *((size_t *)&heap.bytes[i]) = currentHeader - neededBytes;
