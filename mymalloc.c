@@ -40,7 +40,14 @@ void detectLeaks (void) {
     int objCreated = 0;
     int i = 0;
     while (i < MEMLENGTH) {
-
+        size_t currentHeader = *((size_t *)&heap.bytes[i]);
+        size_t realSize = currentHeader & ~1;
+        if (realSize == 0) break;
+        if (currentHeader & 1) {
+            bytesLeaked += realSize - HEADERLENGTH;
+            objCreated += 1;
+        }
+        i += realSize;
     }
     printf("%i bytes leaked in %i objects.", bytesLeaked, objCreated);
 }
@@ -64,15 +71,15 @@ void * mymalloc (size_t size, char *file, int line) {
 
         //Branch to handle allocated memory
         if (currentHeader & 1) {
-            i += (currentHeader & -1);
+            i += (currentHeader & ~1);
         }
 
         //Branch to handle allocate, then split
-        else if (neededBytes <= (currentHeader & -1)) {
+        else if (neededBytes <= (currentHeader & ~1)) {
             *((size_t *)&heap.bytes[i]) = (neededBytes | 1);
             ret = &heap.bytes[(i + HEADERLENGTH)];
 
-            if (neededBytes == (currentHeader & -1)) return ret;
+            if (neededBytes == (currentHeader & ~1)) return ret;
 
             i += neededBytes;
             *((size_t *)&heap.bytes[i]) = currentHeader - neededBytes;
