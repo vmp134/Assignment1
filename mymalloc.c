@@ -41,7 +41,7 @@ From p1.pdf: "Note the pointer returned by mymalloc() must point to the payload,
 void * mymalloc (size_t size, char *file, int line) {
     
     //Setup of initial variables and the heap
-    void *ret;
+    void *ret = NULL;
     size_t neededBytes = HEADERLENGTH + ROUND(size);
     initialize();
 
@@ -54,19 +54,19 @@ void * mymalloc (size_t size, char *file, int line) {
 
         //Branch to handle allocated memory
         if (currentHeader & 1) {
-            i += (currentHeader - 1);
+            i += (currentHeader & -1);
         }
 
         //Branch to handle allocate, then split
-        else if (neededBytes <= currentHeader) {
+        else if (neededBytes <= (currentHeader & -1)) {
             *((size_t *)&heap.bytes[i]) = (neededBytes | 1);
-            
 
-
-            
+            ret = &heap.bytes[(i + HEADERLENGTH)];
 
             i += neededBytes;
             *((size_t *)&heap.bytes[i]) = currentHeader - neededBytes;
+
+            return ret;
         }
 
         //Branch to handle unallocated memory that's too small
@@ -75,6 +75,7 @@ void * mymalloc (size_t size, char *file, int line) {
         }
     }
 
-    return NULL;
+    //Failure case
+    return ret;
 }
 
