@@ -52,28 +52,29 @@ void * mymalloc (size_t size, char *file, int line) {
     while (i < MEMLENGTH) {
         size_t currentHeader = *((size_t *)&heap.bytes[i]);
 
-        //Branch to handle invalid header
-        if (0) {
-            
-        }
-
         //Branch to handle allocated memory
-        else if (currentHeader & 1) {
+        if (currentHeader & 1) {
             i += (currentHeader - 1);
         }
 
         //Branch to handle allocate, then split
-        else if (0) {
+        else if (neededBytes <= currentHeader) {
+            *((size_t *)&heap.bytes[i]) = (neededBytes | 1);
+            
 
+
+            
+
+            i += neededBytes;
+            *((size_t *)&heap.bytes[i]) = currentHeader - neededBytes;
         }
 
         //Branch to handle unallocated memory that's too small
         else {
-
+            i += currentHeader;
         }
-
     }
-    
-    return ret;
+
+    return NULL;
 }
 
