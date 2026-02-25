@@ -16,7 +16,7 @@ void test1(void) {
 }
 
 void test2(void) {
-    char *pArr[120];
+    char *pArr[120] = {NULL};
     for (int i = 0; i < 120; i++) {
         pArr[i] = malloc(1);
     }
@@ -26,7 +26,7 @@ void test2(void) {
 }
 
 void test3(void) {
-    char *pArr[120];
+    char *pArr[120] = {NULL};
     int i = 0;
     int total = 0;
     while (total < 120) {
@@ -48,7 +48,7 @@ void test3(void) {
 }
 
 void test4(void) {
-    char *pArr[120];
+    char *pArr[120] = {NULL};
     for (int i = 0; i < 120; i++) {
         pArr[i] = malloc(1);
     }
@@ -61,11 +61,20 @@ void test4(void) {
 }
 
 void test5(void) {
-    char *pArr[170];
-
-
-    for (int i = 0; i < )
-
+    char *pArr[170] = {NULL};
+    for (int i = 0; i < 170; i++) {
+        pArr[i] = malloc(16);
+    }
+    for (int i = 0; i < 170; i++) {
+        if (rand() % 2) {
+            free(pArr[i]);
+            pArr[i] = NULL;
+        }
+    }
+    for (int i = 0; i < 170; i++) {
+        if (pArr[i] != NULL) 
+            free(pArr[i]);
+    }
 }
 
 int main (int argc, char **argv) {
@@ -86,7 +95,7 @@ int main (int argc, char **argv) {
         //Test 4: Allocate 120 1-byte objects then Free odds then evens (Coalesce)
         test4();
 
-        //Test 5: Allocate 16-byte objects spanning MEMLENGTH, then iterate and randomly Free, then Free remaining
+        //Test 5: Allocate 16-byte objects (24 bytes total) spanning MEMLENGTH, then iterate and randomly Free, then Free remaining
         test5();
     }
 
