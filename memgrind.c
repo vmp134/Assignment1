@@ -79,8 +79,8 @@ void test5(void) {
 
 int main (int argc, char **argv) {
 
-    struct timeval tv;
-    suseconds_t start = tv.tv_usec;
+    struct timeval start, end;
+    gettimeofday(&start, NULL);
 
     for (int i = 0; i < 50; i++) {
         //Test 1: Allocate + Free 1-byte object 120 times
@@ -99,8 +99,11 @@ int main (int argc, char **argv) {
         test5();
     }
 
-    suseconds_t end = tv.tv_usec;
-    suseconds_t meanTime = (end - start)/50;
-    printf("%ld microseconds taken on average for 50 workloads", meanTime);
+    gettimeofday(&end, NULL);
+    long long startTotal = (long long)start.tv_sec * 1000000LL + start.tv_usec;
+    long long endTotal = (long long)end.tv_sec * 1000000LL + end.tv_usec;
+    long long meanTime = (endTotal - startTotal)/50;
+    
+    printf("%lld microseconds taken on average for 50 workloads", meanTime);
     return EXIT_SUCCESS;
 }
