@@ -55,7 +55,8 @@ void detectLeaks(void) {
     }
     i += realSize;
   }
-  printf("%i bytes leaked in %i objects.", bytesLeaked, objCreated);
+  if (bytesLeaked > 0)
+    printf("%i bytes leaked in %i objects.", bytesLeaked, objCreated);
 }
 
 /*
