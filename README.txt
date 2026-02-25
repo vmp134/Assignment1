@@ -14,8 +14,8 @@ Samuel Habib (smh389), Victor Peng (vmp134)
             Test 1: Allocate + Free 1-byte object 120 times
             Test 2: Allocate 120 1-byte objects then Free
             Test 3: Randomly Allocate and Free objects, with 120 total Allocates
-            Test 4: Allocate 120 1-byte objects then Free odds then evens (Coalesce)
-            Test 5: Allocate 16-byte objects (24 bytes total) spanning MEMLENGTH, then iterate and randomly Free, then Free remaining
+            Test 4: Allocate 120 1-byte objects then Free odds then evens. This puts pressure on coalesce, putting it as the focus of this stress test.
+            Test 5: Allocate 16-byte objects (24 bytes total) spanning MEMLENGTH, then iterate and randomly Free, then Free remaining. This simulates the allocation of a linked list through all available memory, with random removals of nodes.
 
 3. Further Design Notes
     mymalloc
