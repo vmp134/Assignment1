@@ -70,7 +70,7 @@ void *mymalloc(size_t size, char *file, int line) {
   initialize();
 
   // Guard 
-  if (neededBytes <= 0 || neededBytes >= (MEMLENGTH - HEADERLENGTH)) {
+  if (neededBytes <= 0 || neededBytes > (MEMLENGTH - HEADERLENGTH)) {
     printf("unable to allocate %zu bytes (%s:%i)", neededBytes, file, line);
     return ret;
   }
