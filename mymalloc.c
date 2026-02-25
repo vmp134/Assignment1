@@ -69,6 +69,12 @@ void *mymalloc(size_t size, char *file, int line) {
   size_t neededBytes = HEADERLENGTH + ROUND(size);
   initialize();
 
+  // Guard 
+  if (neededBytes <= 0 || neededBytes >= (MEMLENGTH - HEADERLENGTH)) {
+    printf("unable to allocate %zu bytes (%s:%i)", neededBytes, file, line);
+    return ret;
+  }
+
   // Loop to check for free/unallocated memory
   // Since everything will be 8-byte aligned, the 3 LSBs are unused.
   // We will therefore use the first LSB (representing 2^0) to represent free

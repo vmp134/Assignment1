@@ -26,15 +26,43 @@ void test2(void) {
 }
 
 void test3(void) {
-
+    char *pArr[120];
+    int i = 0;
+    int total = 0;
+    while (total < 120) {
+        if (rand() % 2) {
+            pArr[i] = malloc(1);
+            i++;
+            total++;
+        }
+        else {
+            if (i > 0) {
+                i--;
+                free(pArr[i]);
+            }
+        }
+    }
+    for (int j = 0; j < i; j++) {
+        free(pArr[j]);
+    }
 }
 
 void test4(void) {
-
+    char *pArr[120];
+    for (int i = 0; i < 120; i++) {
+        pArr[i] = malloc(1);
+    }
+    for (int i = 0; i < 120; i+=2) {
+        free(pArr[i]);
+    }  
+    for (int i = 1; i < 120; i+=2) {
+        free(pArr[i]);
+    }    
 }
 
 void test5(void) {
-
+    int i = 0;
+    
 }
 
 int main (int argc, char **argv) {
@@ -52,10 +80,10 @@ int main (int argc, char **argv) {
         //Test 3: Randomly Allocate and Free objects, with 120 total Allocates
         test3();
         
-        //Test 4:
+        //Test 4: Allocate 120 i-byte objects then Free odds then evens (Coalesce)
         test4();
 
-        //Test 5:
+        //Test 5: Full Allocate of MEMLENGTH then Free
         test5();
     }
 
