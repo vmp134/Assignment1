@@ -86,12 +86,19 @@ void *mymalloc(size_t size, char *file, int line) {
       *((size_t *)&heap.bytes[i]) = (neededBytes | 1);
       ret = &heap.bytes[(i + HEADERLENGTH)];
 
+      //EXACT byte usage
       if (neededBytes == (currentHeader & ~1))
         return ret;
 
+      //Not enough room for whole block after split (8 bytes)
+      if (currentHeader - neededBytes < 16) {
+        *((size_t *)&heap.bytes[i]) = (currentHeader | 1);
+        return ret;
+      }
+        
+      //Split
       i += neededBytes;
       *((size_t *)&heap.bytes[i]) = currentHeader - neededBytes;
-
       return ret;
     }
 
@@ -102,6 +109,7 @@ void *mymalloc(size_t size, char *file, int line) {
   }
 
   // Failure case
+  printf("unable to allocate %zu bytes (%s:%i)", neededBytes, file, line);
   return ret;
 }
 
