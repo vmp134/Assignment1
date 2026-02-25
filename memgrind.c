@@ -26,30 +26,41 @@ void test2(void) {
 }
 
 void test3(void) {
-    
+
 }
 
+void test4(void) {
 
-/* NOTES:
-NEED TO IMPLEMENT TIMEOFDAY, AND THEN RUN TEST 50 TIMES, THEN GET MEAN TEST TIME IN MAIN
-*/
+}
+
+void test5(void) {
+
+}
+
 int main (int argc, char **argv) {
 
-    //Test 1: Allocate + Free 1-byte object 120 times
+    struct timeval tv;
+    suseconds_t start = tv.tv_usec;
 
+    for (int i = 0; i < 50; i++) {
+        //Test 1: Allocate + Free 1-byte object 120 times
+        test1();
 
-    //Test 2: Allocate 120 1-byte objects then Free
+        //Test 2: Allocate 120 1-byte objects then Free
+        test2();
 
+        //Test 3: Randomly Allocate and Free objects, with 120 total Allocates
+        test3();
+        
+        //Test 4:
+        test4();
 
-    //Test 3: Randomly Allocate and Free objects, with 120 total Allocates
+        //Test 5:
+        test5();
+    }
 
-    
-    //Test 4:
-
-
-    //Test 5:
-
-
-
+    suseconds_t end = tv.tv_usec;
+    suseconds_t meanTime = (end - start)/50;
+    printf("%ld microseconds taken on average for 50 workloads", meanTime);
     return EXIT_SUCCESS;
 }
