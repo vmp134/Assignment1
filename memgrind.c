@@ -61,8 +61,11 @@ void test4(void) {
 }
 
 void test5(void) {
-    int i = 0;
-    
+    char *pArr[170];
+
+
+    for (int i = 0; i < )
+
 }
 
 int main (int argc, char **argv) {
@@ -80,10 +83,10 @@ int main (int argc, char **argv) {
         //Test 3: Randomly Allocate and Free objects, with 120 total Allocates
         test3();
         
-        //Test 4: Allocate 120 i-byte objects then Free odds then evens (Coalesce)
+        //Test 4: Allocate 120 1-byte objects then Free odds then evens (Coalesce)
         test4();
 
-        //Test 5: Full Allocate of MEMLENGTH then Free
+        //Test 5: Allocate 16-byte objects spanning MEMLENGTH, then iterate and randomly Free, then Free remaining
         test5();
     }
 
