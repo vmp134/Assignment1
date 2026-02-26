@@ -1,3 +1,4 @@
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -56,7 +57,8 @@ void detectLeaks(void) {
     i += realSize;
   }
   if (bytesLeaked > 0)
-    printf("%i bytes leaked in %i objects.", bytesLeaked, objCreated);
+    fprintf(stderr, "mymalloc: %i bytes leaked in %i objects.\n", bytesLeaked,
+            objCreated);
 }
 
 /*
@@ -69,9 +71,10 @@ void *mymalloc(size_t size, char *file, int line) {
   size_t neededBytes = HEADERLENGTH + ROUND(size);
   initialize();
 
-  // Guard 
+  // Guard
   if (neededBytes <= 0 || neededBytes > (MEMLENGTH - HEADERLENGTH)) {
-    printf("unable to allocate %zu bytes (%s:%i)", neededBytes, file, line);
+    fprintf(stderr, "malloc: Unable to allocate %zu bytes (%s:%d)\n", size,
+            file, line);
     return ret;
   }
 
@@ -93,17 +96,17 @@ void *mymalloc(size_t size, char *file, int line) {
       *((size_t *)&heap.bytes[i]) = (neededBytes | 1);
       ret = &heap.bytes[(i + HEADERLENGTH)];
 
-      //EXACT byte usage
+      // EXACT byte usage
       if (neededBytes == (currentHeader & ~1))
         return ret;
 
-      //Not enough room for whole block after split (8 bytes)
+      // Not enough room for whole block after split (8 bytes)
       if (currentHeader - neededBytes < 16) {
         *((size_t *)&heap.bytes[i]) = (currentHeader | 1);
         return ret;
       }
-        
-      //Split
+
+      // Split
       i += neededBytes;
       *((size_t *)&heap.bytes[i]) = currentHeader - neededBytes;
       return ret;
@@ -116,7 +119,8 @@ void *mymalloc(size_t size, char *file, int line) {
   }
 
   // Failure case
-  printf("unable to allocate %zu bytes (%s:%i)", neededBytes, file, line);
+  fprintf(stderr, "malloc: Unable to allocate %zu bytes (%s:%d)\n", size, file,
+          line);
   return ret;
 }
 
@@ -135,7 +139,7 @@ void myfree(void *ptr, char *file, int line) {
 
   // bounds check
   if (p < &heap.bytes[0] || p >= &heap.bytes[MEMLENGTH]) {
-    fprintf(stderr, "Out of bounds (%s:%d)\n", file, line);
+    fprintf(stderr, "free: Inappropriate pointer (%s:%d)\n", file, line);
     exit(2);
   }
 
@@ -157,8 +161,7 @@ void myfree(void *ptr, char *file, int line) {
     if (p == payloadStart) {
       //* Double free check
       if (!(currentHeader & 1)) {
-        fprintf(stderr, "Attempted to free an already freed pointer (%s:%d)\n",
-                file, line);
+        fprintf(stderr, "free: Inappropriate pointer (%s:%d)\n", file, line);
         exit(2);
       }
 
@@ -193,7 +196,8 @@ void myfree(void *ptr, char *file, int line) {
 
     // Pointer is inside a chunk but not at payload start
     if (p >= chunkStart && p < chunkEnd) {
-      fprintf(stderr, "Pointer Error (%s:%d)\n", file, line);
+      fprintf(stderr, "free: Inappropriate pointer (%s:%d)\n", file, line);
+
       exit(2);
     }
 
@@ -202,6 +206,6 @@ void myfree(void *ptr, char *file, int line) {
   }
 
   // Pointer was not found in any chunk
-  fprintf(stderr, "Pointer not found (%s:%d)\n", file, line);
+  fprintf(stderr, "free: Inappropriate pointer (%s:%d)\n", file, line);
   exit(2);
 }
